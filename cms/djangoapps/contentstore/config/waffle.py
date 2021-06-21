@@ -83,3 +83,17 @@ ENABLE_PAGES_AND_RESOURCES_MICROFRONTEND = CourseWaffleFlag(
     flag_name='pages_and_resources_mfe',
     module_name=__name__,
 )
+
+# .. toggle_name: studio.custom_pls
+# .. toggle_implementation: CourseWaffleFlag
+# .. toggle_default: False (except for SuperUsers)
+# .. toggle_description: Waffle flag to enable custom pacing for PLS
+# .. toggle_use_cases: temporary
+# .. toggle_creation_date: 2021-06-15
+# .. toggle_target_removal_date: 2021-12-31
+# .. toggle_warnings: None
+# .. toggle_tickets: None
+CUSTOM_PLS = CourseWaffleFlag(WAFFLE_NAMESPACE, 'custom_pls', module_name=__name__,)
+
+def custom_pls_is_active(course_key):
+    return CUSTOM_PLS.is_enabled(course_key)
