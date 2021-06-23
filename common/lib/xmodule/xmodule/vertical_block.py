@@ -108,6 +108,7 @@ class VerticalBlock(SequenceFields, XModuleFields, StudioEditableBlock, XmlParse
             'xblock_context': context,
             'unit_title': self.display_name_with_default if not is_child_of_vertical else None,
             'due': self.due,
+            'due_num_weeks': self.due_num_weeks,
             'completed': completed,
             'past_due': past_due,
             'has_assignments': completed is not None,

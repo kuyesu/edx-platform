@@ -46,6 +46,11 @@ class InheritanceMixin(XBlockMixin):
         help=_("Enter the default date by which problems are due."),
         scope=Scope.settings,
     )
+    due_num_weeks = Integer(
+        display_name=_("Number of Weeks Due By"),
+        help=_("Enter the number of weeks the problems are due by"),
+        scope=Scope.settings,
+    )
     visible_to_staff_only = Boolean(
         help=_("If true, can be seen only by course staff, regardless of start date."),
         default=False,

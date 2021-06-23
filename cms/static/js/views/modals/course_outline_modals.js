@@ -75,7 +75,6 @@ define(['jquery', 'backbone', 'underscore', 'gettext', 'js/views/baseview',
 
             event.preventDefault();
             requestData = this.getRequestData();
-            console.log(requestData)
             if (!_.isEqual(requestData, {metadata: {}})) {
                 XBlockViewUtils.updateXBlockFields(this.model, requestData, {
                     success: this.options.onSave
@@ -391,30 +390,37 @@ define(['jquery', 'backbone', 'underscore', 'gettext', 'js/views/baseview',
         }
     });
 
-    SelfPacedDueDateEditor = BaseDateEditor.extend({
-        fieldName: 'due',
+    SelfPacedDueDateEditor = AbstractEditor.extend({
+        fieldName: 'due_num_weeks',
         templateName: 'self-paced-due-date-editor',
         className: 'modal-section-content has-actions due-date-input grading-due-date',
 
+        events: {
+            'click .clear-date': 'clearValue'
+        },
+
         getValue: function() {
-            return this.$('#due_date').val();
+            return parseInt(this.$('#due_in').val());
         },
 
         clearValue: function(event) {
             event.preventDefault();
-            this.$('#due_date').val('');
+            this.$('#due_in').val('');
+        },
+
+        afterRender: function() {
+            AbstractEditor.prototype.afterRender.call(this);
+            this.setDueIn(this.model.get('due_num_weeks'));
+        },
+
+        setDueIn: function(value) {
+            this.$('.field-due-in input').val(value);
         },
 
         getRequestData: function() {
-            let currentDate = parseInt(this.getValue())
-            if (parseInt(this.getValue())){
-                currentDate = new Date()
-                currentDate.setDate(currentDate.getDate() + parseInt(this.getValue())*7)
-            };
-            // due_num_weeks
             return {
                 metadata: {
-                    due: currentDate
+                    due_num_weeks: this.getValue()
                 }
             };
         }
@@ -1109,8 +1115,9 @@ define(['jquery', 'backbone', 'underscore', 'gettext', 'js/views/baseview',
                     tabs[0].editors = [ReleaseDateEditor, GradingEditor, DueDateEditor];
                     tabs[1].editors = [ContentVisibilityEditor, ShowCorrectnessEditor];
 
-                    if (course.get('self_paced')) {
-                        tabs[0].editors.push(SelfPacedDueDateEditor)
+                    // If course is self paced and the custom PLS flag is active
+                    if (course.get('self_paced') && course.get("is_custom_pls_active")) {
+                        tabs[0].editors.push(SelfPacedDueDateEditor);
                     }
 
                     if (options.enable_proctored_exams || options.enable_timed_exams) {

@@ -214,6 +214,10 @@ class ProblemBlock(
         values={"min": 0}, scope=Scope.settings
     )
     due = Date(help=_("Date that this problem is due by"), scope=Scope.settings)
+    due_num_weeks = Integer(
+        help=_("Number of weeks the problem is due by"),
+        scope=Scope.settings,
+    )
     graceperiod = Timedelta(
         help=_("Amount of time after the due date that submissions will be accepted"),
         scope=Scope.settings

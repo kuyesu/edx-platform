@@ -80,9 +80,9 @@ class SequenceFields:  # lint-amnesty, pylint: disable=missing-class-docstring
     )
 
     due_num_weeks = Integer(
-        display_name = _("Number of Weeks Due By"),
+        display_name=_("Number of Weeks Due By"),
         help=_("Enter the number of weeks the problems are due by"),
-        scope = Scope.settings,
+        scope=Scope.settings,
     )
 
     hide_after_due = Boolean(
@@ -201,7 +201,6 @@ class ProctoringFields:
         default=False,
         scope=Scope.settings,
     )
-    
 
     def _get_course(self):
         """
