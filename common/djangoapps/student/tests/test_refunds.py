@@ -88,7 +88,7 @@ class RefundableTest(SharedModuleStoreTestCase):
 
         assert self.enrollment.refundable()
 
-        GeneratedCertificateFactory.create(
+        certificate = GeneratedCertificateFactory.create(
             user=self.user,
             course_id=self.course.id,
             status=CertificateStatuses.downloadable,
@@ -96,15 +96,18 @@ class RefundableTest(SharedModuleStoreTestCase):
         )
 
         assert not self.enrollment.refundable()
-        assert not self.enrollment.\
-            refundable(user_already_has_certs_for=GeneratedCertificate.course_ids_with_certs_for_user(self.user))
+
+        # Certificates that are not in the PASSED_STATUSES should allow a refund
+        certificate.status = CertificateStatuses.notpassing
+        certificate.save()
+
+        assert self.enrollment.refundable()
 
         # Assert that can_refund overrides this and allows refund
+        certificate.status = CertificateStatuses.downloadable
+        certificate.save()
         self.enrollment.can_refund = True
         assert self.enrollment.refundable()
-        assert self.enrollment.refundable(
-            user_already_has_certs_for=GeneratedCertificate.course_ids_with_certs_for_user(self.user)
-        )
 
     @patch('common.djangoapps.student.models.CourseEnrollment.refund_cutoff_date')
     def test_refundable_with_cutoff_date(self, cutoff_date):
