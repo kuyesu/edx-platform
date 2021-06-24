@@ -100,7 +100,7 @@ class CourseEntitlementPolicy(models.Model):
                 entitlement.user_id,
                 entitlement.enrollment_course_run.course_id
             )
-            if certificate and certificates_api.is_passing_status(certificate.status):
+            if certificate and not certificates_api.is_refundable_status(certificate.status):
                 return False
 
             # This is >= because a days_until_expiration 0 means that the expiration day has not fully passed yet

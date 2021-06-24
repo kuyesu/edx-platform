@@ -58,6 +58,7 @@ class CertificateStatuses:
     }
 
     PASSED_STATUSES = (downloadable, generating)
+    NON_REFUNDABLE_STATUSES = (downloadable, generating, unavailable)
 
     @classmethod
     def is_passing_status(cls, status):

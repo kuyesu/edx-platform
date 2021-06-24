@@ -1865,7 +1865,7 @@ class CourseEnrollment(models.Model):
         certificate = GeneratedCertificate.certificate_for_student(self.user, self.course_id)
         # We use the CertificateStatuses here instead of the certificate api method is_passing_status
         # to avoid circular import issues.
-        if certificate and certificate.status in CertificateStatuses.PASSED_STATUSES:
+        if certificate and certificate.status in CertificateStatuses.NON_REFUNDABLE_STATUSES:
             return False
 
         # If it is after the refundable cutoff date they should not be refunded.

@@ -64,6 +64,20 @@ def is_passing_status(cert_status):
     return CertificateStatuses.is_passing_status(cert_status)
 
 
+def is_refundable_status(status):
+    """
+    Given the status of a certificate, check to see if that certificate status can
+    be refunded.
+
+    Arguments:
+        status (str): The status of the certificate that you are checking
+
+    Returns:
+        bool: True if the status is refundable.
+    """
+    return status not in CertificateStatuses.NON_REFUNDABLE_STATUSES
+
+
 def _format_certificate_for_user(username, cert):
     """
     Helper function to serialize an user certificate.
