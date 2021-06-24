@@ -96,8 +96,8 @@ class CourseEntitlementPolicy(models.Model):
             return False
 
         if entitlement.enrollment_course_run:
-            certificate = GeneratedCertificate.certificate_for_student(
-                entitlement.user_id,
+            certificate = certificates_api.get_certificate_for_user_id(
+                entitlement.user,
                 entitlement.enrollment_course_run.course_id
             )
             if certificate and not certificates_api.is_refundable_status(certificate.status):

@@ -169,6 +169,19 @@ def get_certificate_for_user(username, course_key, format_results=True):
         return cert
 
 
+def get_certificate_for_user_id(user, course_id):
+    """
+    Retrieve certificate information for a user in a specific course.
+
+    Arguments:
+        user (User): A Django User.
+        course_id (int): Course ID
+    Returns:
+        A GeneratedCertificate object.
+    """
+    return GeneratedCertificate.certificate_for_student(user, course_id)
+
+
 def get_certificates_for_user_by_course_keys(user, course_keys):
     """
     Retrieve certificate information for a particular user for a set of courses.
