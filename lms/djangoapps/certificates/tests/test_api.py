@@ -51,6 +51,7 @@ from lms.djangoapps.certificates.api import (
     get_certificates_for_user,
     get_certificates_for_user_by_course_keys,
     is_certificate_invalidated,
+    is_refundable_status,
     is_on_allowlist,
     remove_allowlist_entry,
     set_cert_generation_enabled
@@ -349,6 +350,35 @@ class CertificateIsInvalid(WebCertificateTestMixin, ModuleStoreTestCase):
             status=status,
             mode='verified'
         )
+
+
+class CertificateStatusAPITests(SharedModuleStoreTestCase):
+    """
+    Test the APIs related to certificate status.
+    """
+
+    def test_is_refundable_status(self):
+        """
+        Test is a certificate has a refundable status.
+        """
+        user = UserFactory()
+        course = CourseFactory.create(
+            org='edx',
+            number='verified_1',
+            display_name='Verified Course 1',
+            cert_html_view_enabled=True
+        )
+        certificate = GeneratedCertificateFactory.create(
+            user=user,
+            course_id=course.id,
+            status=CertificateStatuses.downloadable,
+            mode='verified',
+        )
+        assert not is_refundable_status(certificate.status)
+
+        certificate.status = CertificateStatuses.notpassing
+        certificate.save()
+        assert is_refundable_status(certificate.status)
 
 
 class CertificateGetTests(SharedModuleStoreTestCase):
