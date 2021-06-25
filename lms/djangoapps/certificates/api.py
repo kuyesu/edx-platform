@@ -55,29 +55,6 @@ User = get_user_model()
 MODES = GeneratedCertificate.MODES
 
 
-def is_passing_status(cert_status):
-    """
-    Given the status of a certificate, return a boolean indicating whether
-    the student passed the course.  This just proxies to the classmethod
-    defined in models.py
-    """
-    return CertificateStatuses.is_passing_status(cert_status)
-
-
-def is_refundable_status(status):
-    """
-    Given the status of a certificate, check to see if that certificate status can
-    be refunded.
-
-    Arguments:
-        status (str): The status of the certificate that you are checking
-
-    Returns:
-        bool: True if the status is refundable.
-    """
-    return status not in CertificateStatuses.NON_REFUNDABLE_STATUSES
-
-
 def _format_certificate_for_user(username, cert):
     """
     Helper function to serialize an user certificate.
@@ -97,7 +74,7 @@ def _format_certificate_for_user(username, cert):
             "grade": cert.grade,
             "created": cert.created_date,
             "modified": cert.modified_date,
-            "is_passing": is_passing_status(cert.status),
+            "is_passing": CertificateStatuses.is_passing_status(cert.status),
             "is_pdf_certificate": bool(cert.download_url),
             "download_url": (
                 cert.download_url or get_certificate_url(cert.user.id, cert.course_id, uuid=cert.verify_uuid,

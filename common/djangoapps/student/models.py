@@ -66,7 +66,7 @@ from common.djangoapps.student.signals import ENROLL_STATUS_CHANGE, ENROLLMENT_T
 from common.djangoapps.track import contexts, segment
 from common.djangoapps.util.model_utils import emit_field_changed_events, get_changed_fields_dict
 from common.djangoapps.util.query import use_read_replica_if_available
-from lms.djangoapps.certificates.models import GeneratedCertificate
+from lms.djangoapps.certificates.data import CertificateStatuses
 from lms.djangoapps.courseware.models import (
     CourseDynamicUpgradeDeadlineConfiguration,
     DynamicUpgradeDeadlineConfiguration,
@@ -1868,7 +1868,7 @@ class CourseEnrollment(models.Model):
             self.user,
             self.course_id
         )
-        if certificate and not lms.djangoapps.certificates.api.is_refundable_status(certificate.status):
+        if certificate and not CertificateStatuses.is_refundable_status(certificate.status):
             return False
 
         # If it is after the refundable cutoff date they should not be refunded.

@@ -19,7 +19,7 @@ from common.djangoapps.entitlements.utils import is_course_run_entitlement_fulfi
 from common.djangoapps.student.models import CourseEnrollment, CourseEnrollmentException
 from common.djangoapps.util.date_utils import strftime_localized
 from lms.djangoapps.certificates import api as certificates_api
-from lms.djangoapps.certificates.models import GeneratedCertificate
+from lms.djangoapps.certificates.data import CertificateStatuses
 from lms.djangoapps.commerce.utils import refund_entitlement
 from openedx.core.djangoapps.catalog.utils import get_course_uuid_for_course
 from openedx.core.djangoapps.content.course_overviews.models import CourseOverview
@@ -100,7 +100,7 @@ class CourseEntitlementPolicy(models.Model):
                 entitlement.user,
                 entitlement.enrollment_course_run.course_id
             )
-            if certificate and not certificates_api.is_refundable_status(certificate.status):
+            if certificate and not CertificateStatuses.is_refundable_status(certificate.status):
                 return False
 
             # This is >= because a days_until_expiration 0 means that the expiration day has not fully passed yet

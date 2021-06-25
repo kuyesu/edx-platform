@@ -67,3 +67,17 @@ class CertificateStatuses:
         the student passed the course.
         """
         return status in cls.PASSED_STATUSES
+
+    @classmethod
+    def is_refundable_status(cls, status):
+        """
+        Given the status of a certificate, check to see if that certificate status can
+        be refunded.
+
+        Arguments:
+            status (str): The status of the certificate that you are checking
+
+        Returns:
+            bool: True if the status is refundable.
+        """
+        return status not in cls.NON_REFUNDABLE_STATUSES
