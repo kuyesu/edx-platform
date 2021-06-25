@@ -66,7 +66,6 @@ from common.djangoapps.student.signals import ENROLL_STATUS_CHANGE, ENROLLMENT_T
 from common.djangoapps.track import contexts, segment
 from common.djangoapps.util.model_utils import emit_field_changed_events, get_changed_fields_dict
 from common.djangoapps.util.query import use_read_replica_if_available
-from lms.djangoapps.certificates.data import CertificateStatuses
 from lms.djangoapps.certificates.models import GeneratedCertificate
 from lms.djangoapps.courseware.models import (
     CourseDynamicUpgradeDeadlineConfiguration,
@@ -1861,11 +1860,15 @@ class CourseEnrollment(models.Model):
         if getattr(self, 'can_refund', None) is not None:
             return True
 
+        # Due to circular import issues this import was placed close to usage. To move this to the
+        # top of the file would require a large scale refactor of the refund code.
+        import lms.djangoapps.certificates.api
         # If the student has already been given a certificate in a non refundable status they should not be refunded
-        certificate = GeneratedCertificate.certificate_for_student(self.user, self.course_id)
-        # We use the CertificateStatuses here instead of the certificate api method is_passing_status
-        # to avoid circular import issues.
-        if certificate and certificate.status in CertificateStatuses.NON_REFUNDABLE_STATUSES:
+        certificate = lms.djangoapps.certificates.api.get_certificate_for_user_id(
+            self.user,
+            self.course_id
+        )
+        if certificate and not lms.djangoapps.certificates.api.is_refundable_status(certificate.status):
             return False
 
         # If it is after the refundable cutoff date they should not be refunded.
