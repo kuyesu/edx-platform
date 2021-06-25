@@ -10,4 +10,3 @@ def should_show_checklists_quality(course_key):
         and if the user is able to see it
     """
     return ENABLE_CHECKLISTS_QUALITY.is_enabled(course_key)
-

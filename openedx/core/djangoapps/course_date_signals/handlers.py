@@ -90,7 +90,9 @@ def _get_custom_pacing_children(subsection, num_weeks):
         next_item = items.pop()
         if next_item.category != 'openassessment':
             section_date_items.append((next_item.location, {'due': timedelta(weeks=num_weeks)}))
-        items.extend(next_item.get_children())
+            items.extend(next_item.get_children())
+        else:
+            return []
     return section_date_items
 
 
