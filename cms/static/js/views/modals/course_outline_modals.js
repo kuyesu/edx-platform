@@ -395,11 +395,23 @@ define(['jquery', 'backbone', 'underscore', 'gettext', 'js/views/baseview',
         className: 'modal-section-content has-actions due-date-input grading-due-date',
 
         events: {
-            'click .clear-date': 'clearValue'
+            'click .clear-date': 'clearValue',
+            'keyup #due_in': 'validateDueIn'
         },
 
         getValue: function() {
             return parseInt(this.$('#due_in').val());
+        },
+
+        validateDueIn: function() {
+            if (parseInt(this.$('#due_in').val()) > 18){
+                this.$('#warning').show();
+                BaseModal.prototype.disableActionButton.call(this.parent, 'save');
+            }
+            else {
+                this.$('#warning').hide();
+                BaseModal.prototype.enableActionButton.call(this.parent, 'save');
+            }
         },
 
         clearValue: function(event) {
@@ -413,11 +425,13 @@ define(['jquery', 'backbone', 'underscore', 'gettext', 'js/views/baseview',
         },
 
         getRequestData: function() {
-            return {
-                metadata: {
-                    due_num_weeks: this.getValue()
-                }
-            };
+            if (this.getValue() < 18) {
+                return {
+                    metadata: {
+                        due_num_weeks: this.getValue()
+                    }
+                };
+            }
         }
     });
 

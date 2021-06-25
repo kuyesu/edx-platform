@@ -14,3 +14,7 @@
         </a>
     </li>
 </ul>
+
+<div id="warning" class="message-status error">
+    <%- gettext('The maximum number of weeks this subsection can be due in is 18 weeks') %>
+</div>
