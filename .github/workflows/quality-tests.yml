@@ -61,6 +61,7 @@ jobs:
         pip install -r requirements/edx/development.txt --src $PIP_SRC_DIR
 
     - name: Run Quality Tests
+      continue-on-error: true
       env:
         TEST_SUITE: quality
         SCRIPT_TO_RUN: ./scripts/generic-ci-tests.sh
