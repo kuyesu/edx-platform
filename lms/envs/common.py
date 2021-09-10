@@ -1582,6 +1582,10 @@ DATABASES = {
     }
 }
 
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+DEFAULT_HASHING_ALGORITHM = 'sha1'
+
 #################### Python sandbox ############################################
 
 CODE_JAIL = {
@@ -2015,6 +2019,10 @@ MIDDLEWARE = [
 
     # Generate code ownership attributes. Keep this immediately after RequestCacheMiddleware.
     'edx_django_utils.monitoring.CodeOwnerMonitoringMiddleware',
+
+    # After cookie monitoring, but before anything else that looks at
+    # cookies, especially the session middleware
+    'openedx.core.djangoapps.cookie_metadata.middleware.CookieNameChange',
 
     # Monitoring and logging middleware
     'openedx.core.lib.request_utils.ExpectedErrorMiddleware',
@@ -3143,7 +3151,13 @@ INSTALLED_APPS = [
     'lms.djangoapps.bulk_user_retirement',
 
     # Agreements
-    'openedx.core.djangoapps.agreements'
+    'openedx.core.djangoapps.agreements',
+
+    # User and group management via edx-django-utils
+    'edx_django_utils.user',
+
+    # Content Library LTI 1.3 Support.
+    'pylti1p3.contrib.django.lti1p3_tool_config',
 ]
 
 ######################### CSRF #########################################
@@ -3991,6 +4005,7 @@ ACCOUNT_VISIBILITY_CONFIGURATION["admin_fields"] = (
         "year_of_birth",
         "phone_number",
         "activation_key",
+        "pending_name_change",
         "is_verified_name_enabled",
     ]
 )
@@ -4798,3 +4813,4 @@ PROGRESS_HELP_URL = "https://edx.readthedocs.io/projects/open-edx-building-and-r
 TEAMS_HELP_URL = "https://edx.readthedocs.io/projects/open-edx-building-and-running-a-course/en/latest/course_features/teams/teams_setup.html"
 TEXTBOOKS_HELP_URL = "https://edx.readthedocs.io/projects/open-edx-building-and-running-a-course/en/latest/course_assets/textbooks.html"
 WIKI_HELP_URL = "https://edx.readthedocs.io/projects/open-edx-building-and-running-a-course/en/latest/course_assets/course_wiki.html"
+CUSTOM_PAGES_HELP_URL = "https://edx.readthedocs.io/projects/open-edx-building-and-running-a-course/en/latest/course_assets/pages.html#adding-custom-pages"

@@ -258,6 +258,16 @@ FEATURES = {
     # only supported in courses using split mongo.
     'ENABLE_CONTENT_LIBRARIES': True,
 
+    # .. toggle_name: FEATURES['ENABLE_CONTENT_LIBRARIES_LTI_TOOL']
+    # .. toggle_implementation: DjangoSetting
+    # .. toggle_default: False
+    # .. toggle_description: When set to True, Content Libraries in
+    #    Studio can be used as an LTI 1.3 tool by external LTI platforms.
+    # .. toggle_use_cases: open_edx
+    # .. toggle_creation_date: 2021-08-17
+    # .. toggle_tickets: https://github.com/edx/edx-platform/pull/27411
+    'ENABLE_CONTENT_LIBRARIES_LTI_TOOL': False,
+
     # Milestones application flag
     'MILESTONES_APP': False,
 
@@ -617,6 +627,7 @@ EDX_ROOT_URL = ''
 AUTHENTICATION_BACKENDS = [
     'auth_backends.backends.EdXOAuth2',
     'rules.permissions.ObjectPermissionBackend',
+    'openedx.core.djangoapps.content_libraries.auth.LtiAuthenticationBackend',
     'openedx.core.djangoapps.oauth_dispatch.dot_overrides.backends.EdxRateLimitedAllowAllUsersModelBackend',
     'bridgekeeper.backends.RulePermissionBackend',
 ]
@@ -716,6 +727,10 @@ MIDDLEWARE = [
 
     # Cookie monitoring
     'openedx.core.lib.request_utils.CookieMonitoringMiddleware',
+
+    # After cookie monitoring, but before anything else that looks at
+    # cookies, especially the session middleware
+    'openedx.core.djangoapps.cookie_metadata.middleware.CookieNameChange',
 
     'openedx.core.djangoapps.header_control.middleware.HeaderControlMiddleware',
     'django.middleware.cache.UpdateCacheMiddleware',
@@ -943,6 +958,9 @@ DATABASES = {
         'USER': 'edxapp001'
     }
 }
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+DEFAULT_HASHING_ALGORITHM = 'sha1'
 
 #################### Python sandbox ############################################
 
@@ -1620,8 +1638,14 @@ INSTALLED_APPS = [
     # Database-backed Organizations App (http://github.com/edx/edx-organizations)
     'organizations',
 
+    # User and group management via edx-django-utils
+    'edx_django_utils.user',
+
     # Allow Studio to use LMS for SSO
     'social_django',
+
+    # Content Library LTI 1.3 Support.
+    'pylti1p3.contrib.django.lti1p3_tool_config',
 ]
 
 
@@ -2470,3 +2494,4 @@ PROGRESS_HELP_URL = "https://edx.readthedocs.io/projects/open-edx-building-and-r
 TEAMS_HELP_URL = "https://edx.readthedocs.io/projects/open-edx-building-and-running-a-course/en/latest/course_features/teams/teams_setup.html"
 TEXTBOOKS_HELP_URL = "https://edx.readthedocs.io/projects/open-edx-building-and-running-a-course/en/latest/course_assets/textbooks.html"
 WIKI_HELP_URL = "https://edx.readthedocs.io/projects/open-edx-building-and-running-a-course/en/latest/course_assets/course_wiki.html"
+CUSTOM_PAGES_HELP_URL = "https://edx.readthedocs.io/projects/open-edx-building-and-running-a-course/en/latest/course_assets/pages.html#adding-custom-pages"
